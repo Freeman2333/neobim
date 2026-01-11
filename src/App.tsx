@@ -14,6 +14,28 @@ function App() {
     end: Point;
   }>(null);
 
+  const [errors, setErrors] = React.useState({
+    trussWidth: "",
+    pitch: "",
+    maxVerticalMemberSpacing: "",
+    memberSize: "",
+  });
+
+  React.useEffect(() => {
+    setErrors({
+      trussWidth: trussWidth <= 0 ? "Width must be greater than 0." : "",
+      pitch:
+        pitch <= 0 || pitch >= 90
+          ? "Pitch must be between 1 and 89 degrees."
+          : "",
+      maxVerticalMemberSpacing:
+        maxVerticalMemberSpacing <= 0 ? "Spacing must be greater than 0." : "",
+      memberSize: memberSize <= 0 ? "Member size must be greater than 0." : "",
+    });
+  }, [trussWidth, pitch, maxVerticalMemberSpacing, memberSize]);
+
+  const hasErrors = Object.values(errors).some(Boolean);
+
   const trussSpecification: ITrussSpecification = useMemo(() => {
     // Clamp values to prevent division by zero or negative values
     const safeMaxVerticalMemberSpacing = Math.max(
@@ -95,10 +117,16 @@ function App() {
               <input
                 type="number"
                 value={trussWidth}
+                min={0.01}
                 onChange={(e) => setTrussWidth(Number(e.target.value))}
                 style={{ marginLeft: "10px" }}
               />
             </label>
+            {errors.trussWidth && (
+              <div style={{ color: "salmon", fontSize: 13 }}>
+                {errors.trussWidth}
+              </div>
+            )}
           </div>
           <div style={{ margin: "10px" }}>
             <label>
@@ -106,10 +134,17 @@ function App() {
               <input
                 type="number"
                 value={pitch}
+                min={1}
+                max={89}
                 onChange={(e) => setPitch(Number(e.target.value))}
                 style={{ marginLeft: "10px" }}
               />
             </label>
+            {errors.pitch && (
+              <div style={{ color: "salmon", fontSize: 13 }}>
+                {errors.pitch}
+              </div>
+            )}
           </div>
           <div style={{ margin: "10px" }}>
             <label>
@@ -117,12 +152,18 @@ function App() {
               <input
                 type="number"
                 value={maxVerticalMemberSpacing}
+                min={0.01}
                 onChange={(e) =>
                   setMaxVerticalMemberSpacing(Number(e.target.value))
                 }
                 style={{ marginLeft: "10px" }}
               />
             </label>
+            {errors.maxVerticalMemberSpacing && (
+              <div style={{ color: "salmon", fontSize: 13 }}>
+                {errors.maxVerticalMemberSpacing}
+              </div>
+            )}
           </div>
           <div style={{ margin: "10px" }}>
             <label>
@@ -135,13 +176,25 @@ function App() {
                 style={{ marginLeft: 8, width: 80 }}
               />
             </label>
+            {errors.memberSize && (
+              <div style={{ color: "salmon", fontSize: 13 }}>
+                {errors.memberSize}
+              </div>
+            )}
           </div>
         </div>
-        <TrussPreview
-          trussSpecification={trussSpecification}
-          memberSize={memberSize}
-          onMemberHover={setHoveredMember}
-        />
+        {!hasErrors && (
+          <TrussPreview
+            trussSpecification={trussSpecification}
+            memberSize={memberSize}
+            onMemberHover={setHoveredMember}
+          />
+        )}
+        {hasErrors && (
+          <div style={{ color: "salmon", marginTop: 20, fontWeight: 500 }}>
+            Please fix the errors above to see the truss preview.
+          </div>
+        )}
         {hoveredMember && (
           <div
             style={{
