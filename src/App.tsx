@@ -9,6 +9,10 @@ function App() {
   const [maxVerticalMemberSpacing, setMaxVerticalMemberSpacing] =
     React.useState(1.5);
   const [memberSize, setMemberSize] = React.useState(50);
+  const [hoveredMember, setHoveredMember] = React.useState<null | {
+    start: Point;
+    end: Point;
+  }>(null);
 
   const trussSpecification: ITrussSpecification = useMemo(() => {
     // Clamp values to prevent division by zero or negative values
@@ -136,7 +140,35 @@ function App() {
         <TrussPreview
           trussSpecification={trussSpecification}
           memberSize={memberSize}
+          onMemberHover={setHoveredMember}
         />
+        {hoveredMember && (
+          <div
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              background: "rgba(0,0,0,0.7)",
+              color: "white",
+              padding: "10px",
+              borderRadius: "8px",
+              zIndex: 10,
+              fontSize: "14px",
+            }}
+          >
+            <div>
+              <b>Member Coordinates</b>
+            </div>
+            <div>
+              Start: ({hoveredMember.start.x.toFixed(2)},{" "}
+              {hoveredMember.start.y.toFixed(2)})
+            </div>
+            <div>
+              End: ({hoveredMember.end.x.toFixed(2)},{" "}
+              {hoveredMember.end.y.toFixed(2)})
+            </div>
+          </div>
+        )}
       </header>
     </div>
   );

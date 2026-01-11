@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { ITrussSpecification, Point } from "./ITrussSpecification";
 import { OrbitControls } from "@react-three/drei";
@@ -6,6 +7,7 @@ import * as THREE from "three";
 interface TrussPreviewProps {
   trussSpecification: ITrussSpecification;
   memberSize: number;
+  onMemberHover?: (member: { start: Point; end: Point } | null) => void;
 }
 
 function MemberBox({
@@ -13,11 +15,15 @@ function MemberBox({
   end,
   color,
   memberSize,
+  onHover,
+  highlight,
 }: {
   start: Point;
   end: Point;
   color: string;
   memberSize: number;
+  onHover?: (member: { start: Point; end: Point } | null) => void;
+  highlight?: boolean;
 }) {
   const size = memberSize / 1000;
   const startVec = new THREE.Vector3(start.x, start.y, 0);
@@ -35,9 +41,20 @@ function MemberBox({
     delta.clone().normalize()
   );
   return (
-    <mesh position={mid.toArray()} quaternion={orientation}>
+    <mesh
+      position={mid.toArray()}
+      quaternion={orientation}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        onHover && onHover({ start, end });
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        onHover && onHover(null);
+      }}
+    >
       <boxGeometry args={[length, size, size]} />
-      <meshStandardMaterial color={color} />
+      <meshStandardMaterial color={highlight ? "orange" : color} />
     </mesh>
   );
 }
@@ -46,7 +63,9 @@ function renderMembers(
   members: [Point, Point][],
   color: string,
   keyPrefix: string,
-  memberSize: number
+  memberSize: number,
+  hovered: { start: Point; end: Point } | null,
+  onHover?: (member: { start: Point; end: Point } | null) => void
 ) {
   return members?.map(([start, end], i) => (
     <MemberBox
@@ -55,6 +74,8 @@ function renderMembers(
       end={end}
       color={color}
       memberSize={memberSize}
+      onHover={onHover}
+      highlight={!!(hovered && hovered.start === start && hovered.end === end)}
     />
   ));
 }
@@ -62,7 +83,16 @@ function renderMembers(
 export function TrussPreview({
   trussSpecification,
   memberSize,
+  onMemberHover,
 }: TrussPreviewProps) {
+  const [hovered, setHovered] = useState<null | { start: Point; end: Point }>(
+    null
+  );
+
+  useEffect(() => {
+    if (onMemberHover) onMemberHover(hovered);
+  }, [hovered, onMemberHover]);
+
   return (
     <Canvas style={{ height: 500 }}>
       <ambientLight intensity={0.7} />
@@ -74,20 +104,39 @@ export function TrussPreview({
           end={trussSpecification.bottomChord[1]}
           color="yellow"
           memberSize={memberSize}
+          onHover={setHovered}
+          highlight={
+            !!(
+              hovered &&
+              hovered.start === trussSpecification.bottomChord[0] &&
+              hovered.end === trussSpecification.bottomChord[1]
+            )
+          }
         />
       )}
-      {renderMembers(trussSpecification.topChords, "red", "top", memberSize)}
+      {renderMembers(
+        trussSpecification.topChords,
+        "red",
+        "top",
+        memberSize,
+        hovered,
+        setHovered
+      )}
       {renderMembers(
         trussSpecification.verticalMembers,
         "green",
         "vert",
-        memberSize
+        memberSize,
+        hovered,
+        setHovered
       )}
       {renderMembers(
         trussSpecification.diagonalMembers,
         "blue",
         "diag",
-        memberSize
+        memberSize,
+        hovered,
+        setHovered
       )}
     </Canvas>
   );
