@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { ITrussSpecification, Point } from "./ITrussSpecification";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -40,16 +40,19 @@ function MemberBox({
     new THREE.Vector3(1, 0, 0),
     delta.clone().normalize()
   );
+  const { gl } = useThree();
   return (
     <mesh
       position={mid.toArray()}
       quaternion={orientation}
       onPointerOver={(e) => {
         e.stopPropagation();
+        if (gl && gl.domElement) gl.domElement.style.cursor = "pointer";
         onHover && onHover({ start, end });
       }}
       onPointerOut={(e) => {
         e.stopPropagation();
+        if (gl && gl.domElement) gl.domElement.style.cursor = "";
         onHover && onHover(null);
       }}
     >
