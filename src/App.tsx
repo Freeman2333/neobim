@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
+import React from "react";
 import "./App.css";
 import { TrussPreview } from "./Truss.Preview";
-import { ITrussSpecification, Point } from "./ITrussSpecification";
+import { useTrussSpecification } from "./useTrussSpecification";
+import { Point } from "./types";
 
 function App() {
   const [trussWidth, setTrussWidth] = React.useState(20);
@@ -36,76 +37,11 @@ function App() {
 
   const hasErrors = Object.values(errors).some(Boolean);
 
-  const trussSpecification: ITrussSpecification = useMemo(() => {
-    // Clamp values to prevent division by zero or negative values
-    const safeMaxVerticalMemberSpacing = Math.max(
-      maxVerticalMemberSpacing,
-      0.01
-    );
-    const safeTrussWidth = Math.max(trussWidth, 0.01);
-
-    // 1. Calculate the number of panels (verticals)
-    const numPanels = Math.ceil(safeTrussWidth / safeMaxVerticalMemberSpacing);
-    const panelWidth = safeTrussWidth / numPanels;
-
-    // 2. Calculate radians from pitch (degrees to radians)
-    const radians = (pitch * Math.PI) / 180;
-
-    // 3. Generate bottom chord nodes (evenly spaced along x-axis, y=0), centered at origin
-    const centerX = safeTrussWidth / 2;
-    const bottomNodes: Point[] = [];
-    for (let i = 0; i <= numPanels; i++) {
-      bottomNodes.push({ x: i * panelWidth - centerX, y: 0 });
-    }
-
-    // 4. Generate top chord nodes (apex at center, rest at panel points), centered at origin
-    const topNodes: Point[] = [];
-    for (let i = 0; i <= numPanels; i++) {
-      let y;
-      if (i <= numPanels / 2) {
-        y = i * panelWidth * Math.tan(radians);
-      } else {
-        y = (safeTrussWidth - i * panelWidth) * Math.tan(radians);
-      }
-      topNodes.push({ x: i * panelWidth - centerX, y });
-    }
-
-    // 5. Define bottom chord as a single member (start to end)
-    const bottomChord: [Point, Point] = [
-      bottomNodes[0],
-      bottomNodes[bottomNodes.length - 1],
-    ];
-
-    // 6. Define top chords as segments between top nodes
-    const topChords: [Point, Point][] = [];
-    for (let i = 0; i < topNodes.length - 1; i++) {
-      topChords.push([topNodes[i], topNodes[i + 1]]);
-    }
-
-    // 7. Define vertical members (from each bottom node to top node)
-    const verticalMembers: [Point, Point][] = [];
-    for (let i = 0; i <= numPanels; i++) {
-      verticalMembers.push([bottomNodes[i], topNodes[i]]);
-    }
-
-    // 8. Define diagonal members (Double-Howe pattern)
-    const diagonalMembers: [Point, Point][] = [];
-    // Diagonals from bottom to top, skipping the apex
-    for (let i = 0; i < numPanels / 2; i++) {
-      diagonalMembers.push([bottomNodes[i], topNodes[i + 1]]);
-      diagonalMembers.push([
-        bottomNodes[numPanels - i],
-        topNodes[numPanels - i - 1],
-      ]);
-    }
-
-    return {
-      bottomChord,
-      topChords,
-      verticalMembers,
-      diagonalMembers,
-    };
-  }, [trussWidth, pitch, maxVerticalMemberSpacing]);
+  const trussSpecification = useTrussSpecification(
+    trussWidth,
+    pitch,
+    maxVerticalMemberSpacing
+  );
 
   return (
     <div className="App">
@@ -190,24 +126,12 @@ function App() {
           />
         )}
         {hasErrors && (
-          <div style={{ color: "#ff7b7b", marginTop: 20, fontWeight: 500 }}>
+          <div className="truss-error">
             Please fix the errors above to see the truss preview.
           </div>
         )}
         {hoveredMember && (
-          <div
-            style={{
-              position: "absolute",
-              top: 20,
-              right: 20,
-              background: "rgba(0,0,0,0.7)",
-              color: "white",
-              padding: "10px",
-              borderRadius: "8px",
-              zIndex: 10,
-              fontSize: "14px",
-            }}
-          >
+          <div className="hovered-member-info">
             <div>
               <b>Member Coordinates</b>
             </div>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { ITrussSpecification, Point } from "./ITrussSpecification";
+import { Point, TrussSpecification } from "./types";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 interface TrussPreviewProps {
-  trussSpecification: ITrussSpecification;
+  trussSpecification: TrussSpecification;
   memberSize: number;
   onMemberHover?: (member: { start: Point; end: Point } | null) => void;
 }
