@@ -8,6 +8,7 @@ function App() {
   const [pitch, setPitch] = React.useState(17);
   const [maxVerticalMemberSpacing, setMaxVerticalMemberSpacing] =
     React.useState(1.5);
+  const [memberSize, setMemberSize] = React.useState(50);
 
   const trussSpecification: ITrussSpecification = useMemo(() => {
     // Clamp values to prevent division by zero or negative values
@@ -71,12 +72,6 @@ function App() {
         topNodes[numPanels - i - 1],
       ]);
     }
-    console.log({
-      bottomChord,
-      topChords,
-      verticalMembers,
-      diagonalMembers,
-    });
 
     return {
       bottomChord,
@@ -125,8 +120,23 @@ function App() {
               />
             </label>
           </div>
+          <div style={{ margin: "10px" }}>
+            <label>
+              Member Size (mm):
+              <input
+                type="number"
+                min={1}
+                value={memberSize}
+                onChange={(e) => setMemberSize(Number(e.target.value))}
+                style={{ marginLeft: 8, width: 80 }}
+              />
+            </label>
+          </div>
         </div>
-        <TrussPreview trussSpecification={trussSpecification} />
+        <TrussPreview
+          trussSpecification={trussSpecification}
+          memberSize={memberSize}
+        />
       </header>
     </div>
   );
