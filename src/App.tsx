@@ -110,76 +110,75 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ margin: "10px" }}>
-            <label>
+        <div className="truss-title">Truss Designer</div>
+        <div className="truss-panel">
+          <div className="input-group">
+            <label className="input-label" htmlFor="truss-width">
               Truss Width (m):
-              <input
-                type="number"
-                value={trussWidth}
-                min={0.01}
-                onChange={(e) => setTrussWidth(Number(e.target.value))}
-                style={{ marginLeft: "10px" }}
-              />
             </label>
+            <input
+              id="truss-width"
+              className="styled-input"
+              type="number"
+              value={trussWidth}
+              min={0.01}
+              onChange={(e) => setTrussWidth(Number(e.target.value))}
+            />
             {errors.trussWidth && (
-              <div style={{ color: "salmon", fontSize: 13 }}>
-                {errors.trussWidth}
-              </div>
+              <div className="error-message">{errors.trussWidth}</div>
             )}
           </div>
-          <div style={{ margin: "10px" }}>
-            <label>
+          <div className="input-group">
+            <label className="input-label" htmlFor="pitch">
               Pitch (degrees):
-              <input
-                type="number"
-                value={pitch}
-                min={1}
-                max={89}
-                onChange={(e) => setPitch(Number(e.target.value))}
-                style={{ marginLeft: "10px" }}
-              />
             </label>
+            <input
+              id="pitch"
+              className="styled-input"
+              type="number"
+              value={pitch}
+              min={1}
+              max={89}
+              onChange={(e) => setPitch(Number(e.target.value))}
+            />
             {errors.pitch && (
-              <div style={{ color: "salmon", fontSize: 13 }}>
-                {errors.pitch}
-              </div>
+              <div className="error-message">{errors.pitch}</div>
             )}
           </div>
-          <div style={{ margin: "10px" }}>
-            <label>
+          <div className="input-group">
+            <label className="input-label" htmlFor="max-spacing">
               Max Vertical Member Spacing (m):
-              <input
-                type="number"
-                value={maxVerticalMemberSpacing}
-                min={0.01}
-                onChange={(e) =>
-                  setMaxVerticalMemberSpacing(Number(e.target.value))
-                }
-                style={{ marginLeft: "10px" }}
-              />
             </label>
+            <input
+              id="max-spacing"
+              className="styled-input"
+              type="number"
+              value={maxVerticalMemberSpacing}
+              min={0.01}
+              onChange={(e) =>
+                setMaxVerticalMemberSpacing(Number(e.target.value))
+              }
+            />
             {errors.maxVerticalMemberSpacing && (
-              <div style={{ color: "salmon", fontSize: 13 }}>
+              <div className="error-message">
                 {errors.maxVerticalMemberSpacing}
               </div>
             )}
           </div>
-          <div style={{ margin: "10px" }}>
-            <label>
+          <div className="input-group">
+            <label className="input-label" htmlFor="member-size">
               Member Size (mm):
-              <input
-                type="number"
-                min={1}
-                value={memberSize}
-                onChange={(e) => setMemberSize(Number(e.target.value))}
-                style={{ marginLeft: 8, width: 80 }}
-              />
             </label>
+            <input
+              id="member-size"
+              className="styled-input"
+              type="number"
+              min={1}
+              value={memberSize}
+              onChange={(e) => setMemberSize(Number(e.target.value))}
+            />
             {errors.memberSize && (
-              <div style={{ color: "salmon", fontSize: 13 }}>
-                {errors.memberSize}
-              </div>
+              <div className="error-message">{errors.memberSize}</div>
             )}
           </div>
         </div>
@@ -191,7 +190,7 @@ function App() {
           />
         )}
         {hasErrors && (
-          <div style={{ color: "salmon", marginTop: 20, fontWeight: 500 }}>
+          <div style={{ color: "#ff7b7b", marginTop: 20, fontWeight: 500 }}>
             Please fix the errors above to see the truss preview.
           </div>
         )}

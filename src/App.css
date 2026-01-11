@@ -1,3 +1,56 @@
+/* Modern input and panel styles for Truss Designer */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin: 12px 0;
+}
+
+.input-label {
+  font-size: 1rem;
+  margin-bottom: 4px;
+  color: #e0e0e0;
+  text-align: left;
+}
+
+.styled-input {
+  padding: 10px 14px;
+  border: 1.5px solid #444;
+  border-radius: 8px;
+  background: #23272f;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+.styled-input:focus {
+  border: 1.5px solid #61dafb;
+  box-shadow: 0 2px 8px rgba(97, 218, 251, 0.12);
+}
+
+.error-message {
+  color: #ff7b7b;
+  font-size: 0.92rem;
+  margin-top: 3px;
+  text-align: left;
+}
+
+.truss-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #61dafb;
+  letter-spacing: 1px;
+}
+
+.truss-panel {
+  background: #20232a;
+  border-radius: 12px;
+  padding: 32px 28px 18px 28px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+  margin-bottom: 30px;
+  min-width: 340px;
+}
 .App {
   text-align: center;
 }
