@@ -3,6 +3,7 @@ import "./App.css";
 import { TrussPreview } from "./Truss.Preview";
 import { useTrussSpecification } from "./useTrussSpecification";
 import { Point } from "./types";
+import { NumericInput } from "./NumericInput";
 
 function App() {
   const [trussWidth, setTrussWidth] = React.useState(20);
@@ -48,75 +49,39 @@ function App() {
       <header className="App-header">
         <div className="truss-title">Truss Designer</div>
         <div className="truss-panel">
-          <div className="input-group">
-            <label className="input-label" htmlFor="truss-width">
-              Truss Width (m):
-            </label>
-            <input
-              id="truss-width"
-              className="styled-input"
-              type="number"
-              value={trussWidth}
-              min={0.01}
-              onChange={(e) => setTrussWidth(Number(e.target.value))}
-            />
-            {errors.trussWidth && (
-              <div className="error-message">{errors.trussWidth}</div>
-            )}
-          </div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="pitch">
-              Pitch (degrees):
-            </label>
-            <input
-              id="pitch"
-              className="styled-input"
-              type="number"
-              value={pitch}
-              min={1}
-              max={89}
-              onChange={(e) => setPitch(Number(e.target.value))}
-            />
-            {errors.pitch && (
-              <div className="error-message">{errors.pitch}</div>
-            )}
-          </div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="max-spacing">
-              Max Vertical Member Spacing (m):
-            </label>
-            <input
-              id="max-spacing"
-              className="styled-input"
-              type="number"
-              value={maxVerticalMemberSpacing}
-              min={0.01}
-              onChange={(e) =>
-                setMaxVerticalMemberSpacing(Number(e.target.value))
-              }
-            />
-            {errors.maxVerticalMemberSpacing && (
-              <div className="error-message">
-                {errors.maxVerticalMemberSpacing}
-              </div>
-            )}
-          </div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="member-size">
-              Member Size (mm):
-            </label>
-            <input
-              id="member-size"
-              className="styled-input"
-              type="number"
-              min={1}
-              value={memberSize}
-              onChange={(e) => setMemberSize(Number(e.target.value))}
-            />
-            {errors.memberSize && (
-              <div className="error-message">{errors.memberSize}</div>
-            )}
-          </div>
+          <NumericInput
+            id="truss-width"
+            label="Truss Width (m):"
+            value={trussWidth}
+            onChange={setTrussWidth}
+            error={errors.trussWidth}
+            min={0.01}
+          />
+          <NumericInput
+            id="pitch"
+            label="Pitch (degrees):"
+            value={pitch}
+            onChange={setPitch}
+            error={errors.pitch}
+            min={1}
+            max={89}
+          />
+          <NumericInput
+            id="max-spacing"
+            label="Max Vertical Member Spacing (m):"
+            value={maxVerticalMemberSpacing}
+            onChange={setMaxVerticalMemberSpacing}
+            error={errors.maxVerticalMemberSpacing}
+            min={0.01}
+          />
+          <NumericInput
+            id="member-size"
+            label="Member Size (mm):"
+            value={memberSize}
+            onChange={setMemberSize}
+            error={errors.memberSize}
+            min={1}
+          />
         </div>
         {!hasErrors && (
           <TrussPreview
