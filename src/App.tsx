@@ -3,7 +3,9 @@ import "./App.css";
 import { TrussPreview } from "./Truss.Preview";
 import { useTrussSpecification } from "./useTrussSpecification";
 import { Point } from "./types";
-import { NumericInput } from "./NumericInput";
+import { NumericInput } from "./components/NumericInput";
+import { MemberTooltip } from "./components/MemberTooltip";
+import { useTrussValidation } from "./hooks/useTrussValidation";
 
 function App() {
   const [trussWidth, setTrussWidth] = React.useState(20);
@@ -16,27 +18,12 @@ function App() {
     end: Point;
   }>(null);
 
-  const [errors, setErrors] = React.useState({
-    trussWidth: "",
-    pitch: "",
-    maxVerticalMemberSpacing: "",
-    memberSize: "",
+  const { errors, hasErrors } = useTrussValidation({
+    trussWidth,
+    pitch,
+    maxVerticalMemberSpacing,
+    memberSize,
   });
-
-  React.useEffect(() => {
-    setErrors({
-      trussWidth: trussWidth <= 0 ? "Width must be greater than 0." : "",
-      pitch:
-        pitch <= 0 || pitch >= 90
-          ? "Pitch must be between 1 and 89 degrees."
-          : "",
-      maxVerticalMemberSpacing:
-        maxVerticalMemberSpacing <= 0 ? "Spacing must be greater than 0." : "",
-      memberSize: memberSize <= 0 ? "Member size must be greater than 0." : "",
-    });
-  }, [trussWidth, pitch, maxVerticalMemberSpacing, memberSize]);
-
-  const hasErrors = Object.values(errors).some(Boolean);
 
   const trussSpecification = useTrussSpecification(
     trussWidth,
@@ -95,21 +82,7 @@ function App() {
             Please fix the errors above to see the truss preview.
           </div>
         )}
-        {hoveredMember && (
-          <div className="hovered-member-info">
-            <div>
-              <b>Member Coordinates</b>
-            </div>
-            <div>
-              Start: ({hoveredMember.start.x.toFixed(2)},{" "}
-              {hoveredMember.start.y.toFixed(2)})
-            </div>
-            <div>
-              End: ({hoveredMember.end.x.toFixed(2)},{" "}
-              {hoveredMember.end.y.toFixed(2)})
-            </div>
-          </div>
-        )}
+        {hoveredMember && <MemberTooltip member={hoveredMember} />}
       </header>
     </div>
   );
