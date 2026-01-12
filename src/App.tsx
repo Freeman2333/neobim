@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { TrussPreview } from "./Truss.Preview";
-import { useTrussSpecification } from "./useTrussSpecification";
+import { useTrussSpecification } from "./hooks/useTrussSpecification";
 import { Point } from "./types";
 import { NumericInput } from "./components/NumericInput";
 import { MemberTooltip } from "./components/MemberTooltip";

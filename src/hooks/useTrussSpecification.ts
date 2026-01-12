@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Point, TrussSpecification } from "./types";
+import { Point, TrussSpecification } from "../types";
 
 export function useTrussSpecification(
   trussWidth: number,
